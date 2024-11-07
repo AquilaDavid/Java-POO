@@ -2,7 +2,7 @@ package circulo;
 
 public class Circulo {
     // Atributos
-    private float pi = 3.141516f;
+    private final float PI = 3.141516f;
     private float raio;
 
     // Contrutor
@@ -12,11 +12,11 @@ public class Circulo {
 
     // Metodos
     public float calcularArea(){
-        return pi * raio * raio;
+        return PI * raio * raio;
     }
 
     public float calcularPerimetro(){
-        return 2 * pi * raio;
+        return 2 * PI * raio;
     }
 
     public void imprimir(){
