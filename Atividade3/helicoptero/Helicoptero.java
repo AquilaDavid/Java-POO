@@ -2,107 +2,108 @@ package helicoptero;
 
 public class Helicoptero {
     // Atributos
-    private boolean ligarHelicoptero = false;
-    private float altura = 0;
-    private int capacidade = 0;
+    private boolean ligado;
+    private float altitude;
+    private final int capacidadeMaxima;
+    private int pessoasPresentes;
 
     // Construtor
-    public Helicoptero(boolean ligarHelicoptero, float altura, int capacidade) {
-        this.altura = altura;
-        this.capacidade = capacidade;
-        this.ligarHelicoptero = ligarHelicoptero;
+    public Helicoptero(int capacidadeMaxima) {
+        this.ligado = false;
+        this.altitude = 0;
+        this.capacidadeMaxima = capacidadeMaxima;
+        this.pessoasPresentes = 0;
     }
 
-    // Métodos
-    public void estadoHelicoptero() {
-        if (ligarHelicoptero) {
-            System.out.println("O helicóptero está ligado e pronto para decolar.");
-        } else {
-            System.out.println("O helicóptero está desligado.");
-        }
+    // Métodos get e set
+    public boolean isLigado() {
+        return ligado;
+    }
 
-        if (altura > 0) {
-            voo();
+    public float getAltitude() {
+        return altitude;
+    }
+
+    public int getCapacidadeMaxima() {
+        return capacidadeMaxima;
+    }
+
+    public int getPessoasPresentes() {
+        return pessoasPresentes;
+    }
+
+    // Método para adicionar pessoa
+    public void entra() {
+        if (pessoasPresentes < capacidadeMaxima) {
+            pessoasPresentes++;
+            System.out.println("Uma pessoa entrou no helicóptero. Total de pessoas: " + pessoasPresentes);
         } else {
-            noChao();
+            System.out.println("O helicóptero já está cheio!");
         }
     }
 
-    public void ligarHelicoptero() {
-        if (!ligarHelicoptero) {
-            ligarHelicoptero = true; // Altera o estado para ligado
+    // Método para remover pessoa
+    public void sai() {
+        if (pessoasPresentes > 0) {
+            pessoasPresentes--;
+            System.out.println("Uma pessoa saiu do helicóptero. Total de pessoas: " + pessoasPresentes);
+        } else {
+            System.out.println("Não há ninguém no helicóptero para sair.");
+        }
+    }
+
+    // Método para ligar o helicóptero
+    public void ligar() {
+        if (!ligado) {
+            ligado = true;
             System.out.println("O helicóptero foi ligado.");
         } else {
-            System.out.println("O helicóptero já está ligado!");
+            System.out.println("O helicóptero já está ligado.");
         }
     }
 
-    public void desligarHelicoptero() {
-        if (ligarHelicoptero) {
-            ligarHelicoptero = false; // Altera o estado para desligado
+    // Método para desligar o helicóptero
+    public void desligar() {
+        if (ligado && altitude == 0) {
+            ligado = false;
             System.out.println("O helicóptero foi desligado.");
+        } else if (!ligado) {
+            System.out.println("O helicóptero já está desligado.");
         } else {
-            System.out.println("O helicóptero já está desligado!");
+            System.out.println("Não é possível desligar o helicóptero enquanto ele estiver no ar.");
         }
     }
 
-    public void voo() {
-        System.out.printf("O helicóptero está em voo e está a %.2f metros de altura.%n", altura);
+    // Método para decolar
+    public void decolar(float novaAltitude) {
+        if (ligado && altitude == 0) {
+            altitude = novaAltitude;
+            System.out.printf("O helicóptero decolou e atingiu %.2f metros de altitude.%n", altitude);
+        } else if (!ligado) {
+            System.out.println("O helicóptero precisa estar ligado para decolar.");
+        } else {
+            System.out.println("O helicóptero já está no ar.");
+        }
     }
 
+    // Método para aterrissar
     public void aterrissar() {
-        if (altura > 0) {
-            altura = 0;
-            System.out.println("O helicóptero aterrissou em segurança.");
-        } else {
+        if (ligado && altitude > 0) {
+            altitude = 0;
+            System.out.println("O helicóptero aterrissou com segurança.");
+        } else if (altitude == 0) {
             System.out.println("O helicóptero já está no chão.");
-        }
-    }
-
-    public void noChao() {
-        System.out.println("O helicóptero está em terra firme.");
-    }
-
-    public void adicionarPessoa() {
-        capacidade++;
-        System.out.println("Uma pessoa foi adicionada. Capacidade atual: " + capacidade);
-        if (capacidade > 5) {
-            System.out.println("Não é possivel adicionar mais pesoas! Atigimos o numero maximo!");
-        }
-    }
-
-    public void removerPessoa() {
-        if (capacidade > 0) {
-            capacidade--;
-            System.out.println("Uma pessoa foi removida. Capacidade atual: " + capacidade);
         } else {
-            System.out.println("Não há pessoas para remover.");
+            System.out.println("O helicóptero precisa estar ligado para aterrissar.");
         }
     }
 
-    public void subir(float alturaDesejada) {
-        if (ligarHelicoptero) {
-            if (alturaDesejada > 0) {
-                altura += alturaDesejada;
-                System.out.printf("O helicóptero subiu %.2f metros. Altura atual: %.2f metros.%n", alturaDesejada, altura);
-            } else {
-                System.out.println("Altura inválida para subir.");
-            }
-        } else {
-            System.out.println("O helicóptero precisa estar ligado para subir.");
-        }
-    }
-
-    public void descer(float alturaDesejada) {
-        if (ligarHelicoptero) {
-            if (alturaDesejada > 0 && altura - alturaDesejada >= 0) {
-                altura -= alturaDesejada;
-                System.out.printf("O helicóptero desceu %.2f metros. Altura atual: %.2f metros.%n", alturaDesejada, altura);
-            } else {
-                System.out.println("Altura inválida para descer.");
-            }
-        } else {
-            System.out.println("O helicóptero precisa estar ligado para descer.");
-        }
+    // Método toString
+    @Override
+    public String toString() {
+        return String.format(
+            "Helicóptero [Ligado: %s, Altitude: %.2f metros, Capacidade: %d/%d]",
+            ligado ? "Sim" : "Não", altitude, pessoasPresentes, capacidadeMaxima
+        );
     }
 }
