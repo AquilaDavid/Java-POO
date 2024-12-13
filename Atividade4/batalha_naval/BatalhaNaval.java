@@ -49,7 +49,10 @@ public class BatalhaNaval {
         Jogador jogador1 = criarJogador("Jogador 1");
         Jogador jogador2 = criarJogador("Jogador 2");
 
+        System.out.println("\n" + jogador1.getNome() + ", posicione suas armas:");
         jogador1.posicionarArmas(scanner);
+
+        System.out.println("\n" + jogador2.getNome() + ", posicione suas armas:");
         jogador2.posicionarArmas(scanner);
 
         iniciarPartida(jogador1, jogador2);
@@ -65,7 +68,7 @@ public class BatalhaNaval {
     }
 
     private Jogador criarJogador(String identificacao) {
-        System.out.println("Informe o nome do " + identificacao + ":");
+        System.out.print("Informe o nome do " + identificacao + ": ");
         String nome = scanner.nextLine();
         return new Jogador(nome);
     }
@@ -83,18 +86,18 @@ public class BatalhaNaval {
 
     private boolean realizarTurno(Jogador atacante, Jogador defensor) {
         System.out.println("\n" + atacante.getNome() + ", é sua vez de atacar!");
-        
-        // Exibe o tabuleiro do atacante e do defensor
-        atacante.exibirTabuleiro(false); // Tabuleiro do adversário visto pelo atacante
-        defensor.exibirTabuleiro(true);  // Tabuleiro do defensor
-        
-        boolean continuarJogo = atacante.atirar(scanner, defensor);
-        
-        System.out.println("\nTabuleiros Atualizados:");
-        atacante.exibirTabuleiro(false); // Atualiza a visão do tabuleiro do adversário
-        defensor.exibirTabuleiro(true);  // Atualiza o próprio tabuleiro do defensor
+        System.out.println("Seu tabuleiro:");
+        atacante.exibirMeuTabuleiro();
 
-        return continuarJogo;
+        System.out.println("\nTabuleiro do adversário:");
+        atacante.exibirJogoDoAdversario();
+
+        boolean jogoContinua = atacante.realizarTurno(scanner, defensor);
+
+        if (!jogoContinua) {
+            System.out.println("\nFim do jogo! O vencedor é " + atacante.getNome() + "!");
+        }
+        return jogoContinua;
     }
 
     public static void main(String[] args) {
