@@ -1,220 +1,190 @@
+# Documentação do Jogo Batalha Naval
 
-# Documentação do Projeto: **Batalha Naval**
-
-## Visão Geral
-
-Este projeto implementa um jogo de **Batalha Naval** com duas classes principais:
-
-- **`Jogador`**: Gerencia as operações relacionadas aos jogadores, como posicionar armas e atirar.
-- **`BatalhaNaval`**: Controla a interação geral do jogo, incluindo o menu, regras e o fluxo de turnos.
-
----
+Este documento descreve detalhadamente o funcionamento e a estrutura do código do jogo **Batalha Naval - Versão Light**, implementado em Java.
 
 ## Estrutura do Código
 
-A estrutura do código consiste nas seguintes classes:
+O projeto é composto pelas seguintes classes principais:
 
-1. **`Jogador`**: Contém a lógica de cada jogador (posicionamento de armas, execução de ataques).
-2. **`BatalhaNaval`**: Controla o fluxo de interação entre os jogadores e o menu principal.
+1. **`Jogador`**: Representa os jogadores do jogo.
+2. **`BatalhaNaval`**: Gerencia o fluxo principal do jogo, incluindo a interação com os jogadores e a execução das rodadas.
 
 ---
 
-## **Classe: `Jogador`**
+## Classe `Jogador`
 
-A classe `Jogador` é responsável por gerenciar as operações do tabuleiro de um jogador, como o posicionamento das armas, ataques ao oponente, e marcação de acertos ou erros no jogo.
+### Responsabilidade
 
-### Atributos:
+A classe `Jogador` encapsula as informações e a lógica relacionadas a cada jogador, como a configuração de armas, gerenciamento de tabuleiros, e execução de ataques.
 
-- **`nome`**: O nome do jogador.
-- **`meuJogo`**: O tabuleiro do jogador, representado por uma matriz 2D de caracteres (`char[][]`).
-- **`jogoDoAdversario`**: O tabuleiro do adversário, representado de forma semelhante ao tabuleiro do jogador.
+### Atributos
 
-### Métodos:
+- **`nome`** (*String*): Nome do jogador.
+- **`meuJogo`** (*char[][]*): Tabuleiro que representa as armas do próprio jogador.
+- **`jogoDoAdversario`** (*char[][]*): Tabuleiro que registra os tiros disparados contra o adversário.
 
-#### `Jogador(String nome)`
-Construtor da classe, que inicializa o nome do jogador e os tabuleiros (`meuJogo` e `jogoDoAdversario`).
+### Principais Métodos
 
-```java
-public Jogador(String nome) {
-    this.nome = nome;
-    this.meuJogo = criarTabuleiro();
-    this.jogoDoAdversario = criarTabuleiro();
-}
-```
+#### `public Jogador(String nome)`
 
-#### `private char[][] criarTabuleiro()`
-Este método cria e retorna um novo tabuleiro 8x8, onde todos os elementos são inicialmente definidos como `'~'` (representando água).
-
-```java
-private char[][] criarTabuleiro() {
-    char[][] tabuleiro = new char[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
-    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
-        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
-            tabuleiro[i][j] = '~'; // '~' representa água
-        }
-    }
-    return tabuleiro;
-}
-```
+Construtor que inicializa o jogador com um nome e cria os tabuleiros (`meuJogo` e `jogoDoAdversario`) com dimensão 8x8, preenchidos com o caractere `'-'`.
 
 #### `public void posicionarArmas(Scanner scanner)`
-Este método permite que o jogador posicione suas armas no tabuleiro, passando pela posição e orientação (horizontal ou vertical) para cada tipo de arma.
 
-```java
-public void posicionarArmas(Scanner scanner) {
-    System.out.println("Posicione suas armas no tabuleiro:");
-    posicionarArma(scanner, 3, 's', 1, "Submarino");
-    posicionarArma(scanner, 2, 'c', 2, "Cruzador");
-    posicionarArma(scanner, 1, 'p', 3, "Porta-aviões");
-}
-```
+Permite ao jogador posicionar suas armas no tabuleiro:
 
-#### `private void posicionarArma(Scanner scanner, int quantidade, char simbolo, int tamanho, String nomeArma)`
-Esse método auxilia na colocação das armas de acordo com a quantidade, o símbolo que representa a arma (ex. `'s'` para submarino), o tamanho da arma (quantos quadrados ela ocupa), e a orientação.
+- Submarinos (3)
+- Cruzadores (2)
+- Porta-avião (1)
 
-```java
-private void posicionarArma(Scanner scanner, int quantidade, char simbolo, int tamanho, String nomeArma) {
-    System.out.printf("Posicione %d %s(s) (%d quadrado(s) cada, representado por '%c')
-",
-                      quantidade, nomeArma, tamanho, simbolo);
-    // Loop para posicionar as armas no tabuleiro
-}
-```
+As armas são posicionadas horizontalmente no tabuleiro com validação para evitar sobreposições ou posicionamentos inválidos.
 
-#### `public boolean atirar(Scanner scanner, Jogador adversario)`
-Este método gerencia a ação de atirar no tabuleiro do adversário. Após o ataque, ele verifica se o tiro foi um acerto ou erro e marca no tabuleiro do adversário.
+#### `public void exibirMeuTabuleiro()`
 
-```java
-public boolean atirar(Scanner scanner, Jogador adversario) {
-    for (int i = 0; i < 2; i++) {
-        // Logica de entrada de posição para o ataque
-        if (adversario.verificarSeAcertou(linha, coluna)) {
-            System.out.println("Acertou uma arma!");
-            marcarNoTabuleiro(jogoDoAdversario, linha, coluna, 'X'); // Marca acerto
-        } else {
-            System.out.println("Água!");
-            marcarNoTabuleiro(jogoDoAdversario, linha, coluna, 'O'); // Marca erro
-        }
-    }
-    return true;
-}
-```
+Exibe o tabuleiro `meuJogo`, mostrando as armas posicionadas.
 
-#### `private boolean verificarSeAcertou(int linha, int coluna)`
-Este método verifica se a posição informada corresponde a um acerto em uma arma do adversário, marcando-a no tabuleiro.
+#### `public void exibirJogoDoAdversario()`
 
-```java
-private boolean verificarSeAcertou(int linha, int coluna) {
-    if (meuJogo[linha][coluna] != '~' && meuJogo[linha][coluna] != 'X') {
-        meuJogo[linha][coluna] = 'X'; // Marca como destruído
-        return true;
-    }
-    return false;
-}
-```
+Exibe o tabuleiro `jogoDoAdversario`, destacando tiros acertados (`'X'`) e água (`'~'`).
 
-#### `private boolean verificarSeTodasArmasAfundaram()`
-Este método verifica se todas as armas do jogador foram afundadas, ou seja, se todas as posições de armas foram atingidas.
+#### `public boolean realizarTurno(Scanner scanner, Jogador adversario)`
 
-```java
-private boolean verificarSeTodasArmasAfundaram() {
-    for (int i = 0; i < TAMANHO_TABULEIRO; i++) {
-        for (int j = 0; j < TAMANHO_TABULEIRO; j++) {
-            if (meuJogo[i][j] == 's' || meuJogo[i][j] == 'c' || meuJogo[i][j] == 'p') {
-                return false; // Ainda há armas não destruídas
-            }
-        }
-    }
-    return true;
-}
-```
+Permite ao jogador realizar um turno de ataque:
+
+1. Solicita duas coordenadas de ataque ao jogador.
+2. Verifica se as coordenadas acertaram ou erraram armas do adversário.
+3. Atualiza o tabuleiro do adversário e o próprio `jogoDoAdversario`.
+4. Retorna `false` caso todas as armas do adversário tenham sido destruídas, indicando o fim do jogo.
 
 ---
 
-## **Classe: `BatalhaNaval`**
+## Classe `BatalhaNaval`
 
-A classe `BatalhaNaval` controla a interação geral do jogo, incluindo o menu, regras, criação de jogadores e o fluxo de turnos.
+### Responsabilidade
 
-### Atributos:
+A classe `BatalhaNaval` gerencia o fluxo geral do jogo, incluindo:
 
-- **`scanner`**: O objeto `Scanner` utilizado para capturar as entradas dos jogadores.
+- Exibição do menu principal.
+- Inicialização de jogadores e tabuleiros.
+- Controle das rodadas até a determinação de um vencedor.
 
-### Métodos:
+### Atributos
+
+- **`scanner`** (*Scanner*): Gerencia a entrada de dados do usuário.
+
+### Principais Métodos
 
 #### `public void iniciar()`
-Este método gerencia o menu principal do jogo. Ele permite ao jogador escolher entre iniciar o jogo, exibir as regras ou sair.
 
-```java
-public void iniciar() {
-    boolean executando = true;
-    while (executando) {
-        exibirMenu();
-        int escolha = scanner.nextInt();
-        scanner.nextLine(); // Limpa o buffer
-        switch (escolha) {
-            case 1:
-                iniciarJogo();
-                break;
-            case 2:
-                exibirRegras();
-                break;
-            case 3:
-                System.out.println("Saindo do jogo. Até a próxima!");
-                executando = false;
-                break;
-            default:
-                System.out.println("Opção inválida. Tente novamente.");
-        }
-    }
-    scanner.close();
-}
-```
+Controla o loop principal do jogo. Exibe o menu e executa a opção escolhida:
+
+- **1. Iniciar Jogo**: Começa uma nova partida.
+- **2. Exibir Regras**: Exibe as regras do jogo.
+- **3. Sair**: Encerra o programa.
 
 #### `private void exibirMenu()`
-Este método exibe o menu principal com as opções de iniciar o jogo, ver as regras ou sair.
 
-```java
-private void exibirMenu() {
-    System.out.println("\n=== Batalha Naval - Menu Principal ===");
-    System.out.println("1. Iniciar Jogo");
-    System.out.println("2. Exibir Regras");
-    System.out.println("3. Sair");
-    System.out.print("Escolha uma opção: ");
-}
-```
+Exibe as opções do menu principal.
 
 #### `private void iniciarJogo()`
-Este método inicia o jogo, criando dois jogadores e posicionando suas armas. Após isso, a partida começa e os jogadores alternam turnos.
 
-```java
-private void iniciarJogo() {
-    System.out.println("\nBem-vindo ao Jogo Batalha Naval - Versão Light!");
-    Jogador jogador1 = criarJogador("Jogador 1");
-    Jogador jogador2 = criarJogador("Jogador 2");
-
-    jogador1.posicionarArmas(scanner);
-    jogador2.posicionarArmas(scanner);
-
-    iniciarPartida(jogador1, jogador2);
-}
-```
+1. Solicita os nomes dos jogadores e cria suas instâncias.
+2. Permite que cada jogador posicione suas armas.
+3. Inicia a partida utilizando o método `iniciarPartida`.
 
 #### `private void exibirRegras()`
-Este método exibe as regras do jogo.
 
-```java
-private void exibirRegras() {
-    System.out.println("\n=== Regras do Jogo ===");
-    System.out.println("1. Cada jogador posiciona suas armas no tabuleiro.");
-    System.out.println("2. Os jogadores alternam turnos para tentar acertar as armas do adversário.");
-    System.out.println("3. Ganha o jogador que afundar todas as armas do oponente primeiro.");
-    System.out.println("4. Use coordenadas (linha e coluna) para posicionar ou atacar.");
-    System.out.println("5. Boa sorte e divirta-se!");
-}
+Exibe as regras básicas do jogo para os jogadores.
+
+#### `private void iniciarPartida(Jogador jogador1, Jogador jogador2)`
+
+Gerencia as rodadas do jogo:
+
+- Alterna turnos entre os jogadores.
+- Exibe os tabuleiros atualizados após cada turno.
+- Encerra o jogo assim que todas as armas de um jogador forem destruídas.
+
+#### `private boolean realizarTurno(Jogador atacante, Jogador defensor)`
+
+1. Permite que o jogador atacante dispare contra o defensor.
+2. Atualiza os tabuleiros e exibe o estado atual.
+3. Retorna `false` se o defensor perder todas as suas armas, indicando o fim do jogo.
+
+---
+
+## Fluxo do Jogo
+
+1. **Inicialização**:
+
+   - Os jogadores informam seus nomes.
+   - Cada jogador posiciona suas armas em seu tabuleiro.
+
+2. **Rodadas**:
+
+   - Os jogadores alternam turnos.
+   - Cada turno permite dois ataques.
+   - Os ataques são marcados como `X` (acerto) ou `~` (erro) no tabuleiro `jogoDoAdversario`.
+
+3. **Encerramento**:
+
+   - O jogo termina quando todas as armas de um jogador forem destruídas.
+   - O vencedor é anunciado.
+
+---
+
+## Exemplo de Execução
+
+### Menu Principal
+
+```text
+=== Batalha Naval - Menu Principal ===
+1. Iniciar Jogo
+2. Exibir Regras
+3. Sair
+Escolha uma opção: 1
+```
+
+### Posicionamento de Armas
+
+```text
+Jogador 1, posicione suas armas:
+Posicione o Submarino (tamanho 1):
+Linha: 2
+Coluna: 3
+...
+```
+
+### Rodadas
+
+```text
+Jogador 1, é sua vez de atacar!
+Seu tabuleiro:
+- - - - - - - -
+- - - - - - - -
+...
+Tabuleiro do adversário:
+~ - - - - - - -
+X - - - - - - -
+...
+Informe a linha para o tiro: 3
+Informe a coluna para o tiro: 4
+Resultado: Água!
+...
+```
+
+### Fim do Jogo
+
+```text
+Fim do jogo! O vencedor é Jogador 1!
 ```
 
 ---
 
-## Conclusão
+## Considerações Finais
 
-Essa documentação descreve a estrutura e funcionalidade de cada parte do código do jogo **Batalha Naval**. Com ela, qualquer desenvolvedor ou usuário pode compreender como o jogo funciona e como as interações entre os jogadores acontecem. A lógica de jogo é clara e permite personalização e expansão, como a inclusão de novas armas ou funcionalidades.
+O código é modular e utiliza encapsulamento para garantir organização e clareza. O uso de arrays bidimensionais para os tabuleiros facilita a visualização e manipulação do estado do jogo. Sugestões de melhoria incluem:
+
+- Implementar salvação e carregamento de jogos.
+- Melhorar a interface do usuário para torná-la mais intuitiva.
+- Adicionar dificuldade configurável (como tamanho do tabuleiro e número de armas).
+
