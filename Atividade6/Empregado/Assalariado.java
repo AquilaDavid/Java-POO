@@ -3,8 +3,8 @@ package Empregado;
 public class Assalariado extends Empregado {
     private double salario;
     
-    public Assalariado(String nome, double salario) {
-        super(nome);
+    public Assalariado(String nome, String sobrenome, int cpf, double salario) {
+        super(nome, sobrenome, cpf);
         this.salario = salario;
     }
     

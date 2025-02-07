@@ -16,7 +16,7 @@ public class FolhaDePagamento {
     
     public void exibirTodos() {
         for (Empregado empregado : funcionarios) {
-            System.out.println(empregado.getNome() + " - R$ " + empregado.calcularVencimento());
+            System.out.println(empregado.getNome() + " "  + empregado.getSobrenome() + " - R$ " + empregado.calcularVencimento());
         }
     }
     
